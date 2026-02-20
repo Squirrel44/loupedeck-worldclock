@@ -66,17 +66,16 @@ namespace Loupedeck.WorldClockPlugin
         // update command image (nothing to update here per se, but that's called to draw whatever is shown on the Loupedeck)
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
-            DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
-            ZonedClock clock = SystemClock.Instance.InZone(zone);
-            ZonedDateTime today = clock.GetCurrentZonedDateTime();
-            CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
-
-            Int32 idx = actionParameter.LastIndexOf("/");
             using (var bitmapBuilder = new BitmapBuilder(imageSize))
             {
                 bitmapBuilder.Clear(BitmapColor.Black);
                 if (!String.IsNullOrEmpty(actionParameter))
                 {
+                    DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
+                    ZonedClock clock = SystemClock.Instance.InZone(zone);
+                    ZonedDateTime today = clock.GetCurrentZonedDateTime();
+                    CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
+                    Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
                     var w = bitmapBuilder.Width * 0.8;
                     var y1 = bitmapBuilder.Height * 0.42;

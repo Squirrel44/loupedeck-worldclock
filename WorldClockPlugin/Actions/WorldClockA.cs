@@ -65,27 +65,29 @@ namespace Loupedeck.WorldClockPlugin
         // update command image (nothing to update here per se, but that's called to draw whatever is shown on the Loupedeck)
         protected override BitmapImage GetCommandImage(String actionParameter, PluginImageSize imageSize)
         {
-            DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
-            ZonedClock clock = SystemClock.Instance.InZone(zone);
-            ZonedDateTime today = clock.GetCurrentZonedDateTime();
-            Int32 idx = actionParameter.LastIndexOf("/");
-            var secHandLength = 35;
-            var minHandLength = 30;
-            var hrHandLength = 20;
-            Int32[] handCoord = new Int32[2];
             using (var bitmapBuilder = new BitmapBuilder(imageSize))
             {
                 bitmapBuilder.Clear(BitmapColor.Black);
-                var x1 = bitmapBuilder.Width * 0.5;
-                var y1 = bitmapBuilder.Width * 0.5;
-                bitmapBuilder.SetBackgroundImage(EmbeddedResources.ReadImage(EmbeddedResources.FindFile("watchface1.png")));
-                handCoord = HelperFunctions.MSCoord(Int32.Parse(today.ToString("ss", CultureInfo.InvariantCulture)), secHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
-                bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)x1, (Int32)y1, new BitmapColor(255, 0, 0), 1); 
-                handCoord = HelperFunctions.MSCoord(Int32.Parse(today.ToString("mm", CultureInfo.InvariantCulture)), minHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
-                bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)x1, (Int32)y1, new BitmapColor(120, 120, 120), 2);
-                handCoord = HelperFunctions.HrCoord(Int32.Parse(today.ToString("hh", CultureInfo.InvariantCulture)) % 12, Int32.Parse(today.ToString("mm", CultureInfo.InvariantCulture)), hrHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
-                bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)x1, (Int32)y1, new BitmapColor(120, 120, 120), 3);
-
+                if (!String.IsNullOrEmpty(actionParameter))
+                {
+                    DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
+                    ZonedClock clock = SystemClock.Instance.InZone(zone);
+                    ZonedDateTime today = clock.GetCurrentZonedDateTime();
+                    Int32 idx = actionParameter.LastIndexOf("/");
+                    var secHandLength = 35;
+                    var minHandLength = 30;
+                    var hrHandLength = 20;
+                    Int32[] handCoord = new Int32[2];
+                    var x1 = bitmapBuilder.Width * 0.5;
+                    var y1 = bitmapBuilder.Width * 0.5;
+                    bitmapBuilder.SetBackgroundImage(EmbeddedResources.ReadImage(EmbeddedResources.FindFile("watchface1.png")));
+                    handCoord = HelperFunctions.MSCoord(Int32.Parse(today.ToString("ss", CultureInfo.InvariantCulture)), secHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
+                    bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)x1, (Int32)y1, new BitmapColor(255, 0, 0), 1);
+                    handCoord = HelperFunctions.MSCoord(Int32.Parse(today.ToString("mm", CultureInfo.InvariantCulture)), minHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
+                    bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)x1, (Int32)y1, new BitmapColor(120, 120, 120), 2);
+                    handCoord = HelperFunctions.HrCoord(Int32.Parse(today.ToString("hh", CultureInfo.InvariantCulture)) % 12, Int32.Parse(today.ToString("mm", CultureInfo.InvariantCulture)), hrHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
+                    bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)x1, (Int32)y1, new BitmapColor(120, 120, 120), 3);
+                }
                 return bitmapBuilder.ToImage();
             }
         }

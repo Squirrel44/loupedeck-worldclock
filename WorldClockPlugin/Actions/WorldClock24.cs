@@ -75,15 +75,15 @@ namespace Loupedeck.WorldClockPlugin
                 }
             }
             
-            DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
-            ZonedClock clock = SystemClock.Instance.InZone(zone);
-            ZonedDateTime today = clock.GetCurrentZonedDateTime();
-            Int32 idx = actionParameter.LastIndexOf("/");
             using (var bitmapBuilder = new BitmapBuilder(imageSize))
             {
                 bitmapBuilder.Clear(BitmapColor.Black);
                 if (!String.IsNullOrEmpty(actionParameter))
                 {
+                    DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
+                    ZonedClock clock = SystemClock.Instance.InZone(zone);
+                    ZonedDateTime today = clock.GetCurrentZonedDateTime();
+                    Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
                     var w = bitmapBuilder.Width * 0.8;
                     var y1 = bitmapBuilder.Height * 0.45;

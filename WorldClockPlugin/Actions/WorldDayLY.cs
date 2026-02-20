@@ -50,7 +50,6 @@ namespace Loupedeck.WorldClockPlugin
             LocalDateTime yearsEnd = new LocalDateTime(today.Year, 12, 31, 23, 59, 59);
             Period timeLeft = Period.Between(today.LocalDateTime, yearsEnd, PeriodUnits.Days);
 
-            Int32 idx = actionParameter.LastIndexOf("/");
             using (var bitmapBuilder = new BitmapBuilder(imageSize))
             {
                 bitmapBuilder.Clear(BitmapColor.Black);

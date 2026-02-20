@@ -48,7 +48,6 @@ namespace Loupedeck.WorldClockPlugin
             ZonedClock clock = SystemClock.Instance.InZone(zone);
             ZonedDateTime today = clock.GetCurrentZonedDateTime();
 
-            Int32 idx = actionParameter.LastIndexOf("/");
             using (var bitmapBuilder = new BitmapBuilder(imageSize))
             {
                 bitmapBuilder.Clear(BitmapColor.Black);

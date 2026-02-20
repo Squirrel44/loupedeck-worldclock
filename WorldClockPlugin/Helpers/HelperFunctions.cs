@@ -16,10 +16,8 @@
                 {
                     return;
                 }
-                Byte[] ba = new Byte[resourceStream.Length];
-                resourceStream.Read(ba, 0, ba.Length);
-                var byteArray = ba;
-                var str = System.Text.Encoding.Default.GetString(byteArray);
+                using var reader = new StreamReader(resourceStream, System.Text.Encoding.UTF8);
+                var str = reader.ReadToEnd();
                 var tzList = str.Split(',').ToList();
                 foreach (var tz in tzList)
                 {

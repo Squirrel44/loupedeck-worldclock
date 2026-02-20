@@ -54,7 +54,6 @@ namespace Loupedeck.WorldClockPlugin
 
             IWeekYearRule rule = WeekYearRules.Iso;
 
-            Int32 idx = actionParameter.LastIndexOf("/");
             using (var bitmapBuilder = new BitmapBuilder(imageSize))
             {
                 bitmapBuilder.Clear(BitmapColor.Black);

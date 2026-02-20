@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="PluginApi">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath Condition="$(OS) == 'Windows_NT'">C:\Program Files (x86)\Loupedeck\Loupedeck2\PluginApi.dll</HintPath>
+      <HintPath Condition="$(OS) == 'Windows_NT'">C:\Program Files\Logi\LogiPluginService\PluginApi.dll</HintPath>
       <HintPath Condition="$(OS) != 'Windows_NT'">/Applications/Loupedeck.app/Contents/MonoBundle/PluginApi.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -69,8 +69,9 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <PostBuildEvent Condition="$(OS) == 'Windows_NT'">call "$(ProjectDir)BuildEvents\postbuild.cmd" "$(ProjectDir)" "$(TargetDir)"</PostBuildEvent>
-    <PostBuildEvent Condition="$(OS) != 'Windows_NT'">sh "$(ProjectDir)BuildEvents\postbuild" "$(ProjectDir)" "$(TargetDir)"</PostBuildEvent>
+	  <PostBuildEvent Condition="$(OS) == 'Windows_NT'">call "$(MSBuildProjectDirectory)\BuildEvents\postbuild.cmd" "$(MSBuildProjectDirectory)\" "$(OutputPath)"</PostBuildEvent>
+	  <PostBuildEvent Condition="$(OS) != 'Windows_NT'">sh "$(ProjectDir)BuildEvents\postbuild" "$(ProjectDir)" "$(OutputPath)"</PostBuildEvent>
+	  <PostBuildEvent>call "$(MSBuildProjectDirectory)\BuildEvents\postbuild.cmd" "$(MSBuildProjectDirectory)\" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>
 
 </Project>

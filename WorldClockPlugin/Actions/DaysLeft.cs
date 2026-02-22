@@ -15,7 +15,6 @@ namespace Loupedeck.WorldClockPlugin
         private WorldClockPlugin _plugin;
         private L10n _l10n;
         private Dictionary<String, String> l7dValues;
-        private readonly System.Collections.Concurrent.ConcurrentDictionary<String, byte> _knownParams = new();
         public DaysLeft()
             : base(displayName: "Days until date", description: "Display how many days are left until given date", groupName: "Day") => this.MakeProfileAction("text;YYYY-MM-DD");
         protected override Boolean OnLoad()
@@ -39,11 +38,7 @@ namespace Loupedeck.WorldClockPlugin
                 this.GroupName = "Digital";
                 this._plugin.Log.Info($"12S : l7dValues was empty or null: DisplayName: {this.l7dValues["displayName"]}, groupName: {this.l7dValues["groupName"]}.");
             }
-            this._plugin.Tick += (sender, e) =>
-            {
-                foreach (var p in _knownParams.Keys)
-                    this.ActionImageChanged(p);
-            };
+            this._plugin.Tick += (sender, e) => this.ActionImageChanged("");
             return base.OnLoad();
         }
 
@@ -61,7 +56,7 @@ namespace Loupedeck.WorldClockPlugin
                 LocalDateTime countdownDate = new LocalDateTime(Int32.Parse(split[0]), Int32.Parse(split[1]), Int32.Parse(split[2])+1, 0, 0, 0);
 
                 Period timeLeft = Period.Between(today.LocalDateTime, countdownDate, PeriodUnits.Days);
-                _knownParams.TryAdd(actionParameter, 0);
+
                 Int32 idx = actionParameter.LastIndexOf("/");
                 using (var bitmapBuilder = new BitmapBuilder(imageSize))
                 {

@@ -17,6 +17,7 @@ namespace Loupedeck.WorldClockPlugin
         private WorldClockPlugin _plugin;
         private L10n _l10n;
         private Dictionary<String, String> l7dValues;
+        private readonly System.Collections.Concurrent.ConcurrentBag<String> _knownParams = new();
         public WorldClock24SL()
             : base() => this.MakeProfileAction("tree");
         protected override PluginProfileActionData GetProfileActionData()
@@ -56,7 +57,11 @@ namespace Loupedeck.WorldClockPlugin
                 this.GroupName = "Digital";
                 this._plugin.Log.Info($"12S : l7dValues was empty or null: DisplayName: {this.l7dValues["displayName"]}, groupName: {this.l7dValues["groupName"]}.");
             }
-            this._plugin.Tick += (sender, e) => this.ActionImageChanged("");
+            this._plugin.Tick += (sender, e) =>
+            {
+                foreach (var p in _knownParams)
+                    this.ActionImageChanged(p);
+            };
             return base.OnLoad();
         }
 
@@ -73,6 +78,8 @@ namespace Loupedeck.WorldClockPlugin
                     DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
+                    if (!_knownParams.Contains(actionParameter)) _knownParams.Add(actionParameter);
+                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
                     Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
                     var w = bitmapBuilder.Width * 0.8;
@@ -81,7 +88,7 @@ namespace Loupedeck.WorldClockPlugin
                     var h = bitmapBuilder.Height * 0.3;
 
                     bitmapBuilder.DrawText(actionParameter.Substring(idx + 1).Replace("_", " "), (Int32)x1, (Int32)y2, (Int32)w, (Int32)h, new BitmapColor(255, 255, 255, 200), imageSize == PluginImageSize.Width90 ? 13 : 9, imageSize == PluginImageSize.Width90 ? 8 : 6, 6);
-                    bitmapBuilder.DrawText(today.ToString("HH:mm:ss", CultureInfo.InvariantCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 18 : 9, imageSize == PluginImageSize.Width90 ? 12 : 8, 1);
+                    bitmapBuilder.DrawText(todayDt.ToString("HH:mm:ss", CultureInfo.InvariantCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 18 : 9, imageSize == PluginImageSize.Width90 ? 12 : 8, 1);
                 }
                 return bitmapBuilder.ToImage();
             }

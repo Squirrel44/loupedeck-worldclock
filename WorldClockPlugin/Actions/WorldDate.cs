@@ -17,6 +17,7 @@ namespace Loupedeck.WorldClockPlugin
         private WorldClockPlugin _plugin;
         private L10n _l10n;
         private Dictionary<String, String> l7dValues;
+        private readonly System.Collections.Concurrent.ConcurrentBag<String> _knownParams = new();
         public WorldDate()
             : base(displayName: "Date", description: "Display date", groupName: "Date") => this.MakeProfileAction("tree");
         protected override PluginProfileActionData GetProfileActionData()
@@ -56,7 +57,11 @@ namespace Loupedeck.WorldClockPlugin
                 this.GroupName = "Digital";
                 this._plugin.Log.Info($"12S : l7dValues was empty or null: DisplayName: {this.l7dValues["displayName"]}, groupName: {this.l7dValues["groupName"]}.");
             }
-            this._plugin.Tick += (sender, e) => this.ActionImageChanged("");
+            this._plugin.Tick += (sender, e) =>
+            {
+                foreach (var p in _knownParams)
+                    this.ActionImageChanged(p);
+            };
             return base.OnLoad();
         }
 
@@ -73,6 +78,8 @@ namespace Loupedeck.WorldClockPlugin
                     DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
+                    if (!_knownParams.Contains(actionParameter)) _knownParams.Add(actionParameter);
+                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
                     CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
                     Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
@@ -80,7 +87,7 @@ namespace Loupedeck.WorldClockPlugin
                     var y1 = bitmapBuilder.Height * 0.35;
                     var h = bitmapBuilder.Height * 0.3;
 
-                    bitmapBuilder.DrawText(today.LocalDateTime.ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 15 : 9, imageSize == PluginImageSize.Width90 ? 7 : 5, 10);
+                    bitmapBuilder.DrawText(todayDt.ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 15 : 9, imageSize == PluginImageSize.Width90 ? 7 : 5, 10);
                 }
                 return bitmapBuilder.ToImage();
             }

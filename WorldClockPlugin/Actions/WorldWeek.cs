@@ -38,7 +38,7 @@ namespace Loupedeck.WorldClockPlugin
                 this.AddParameter("week", "Week", "Digital");
                 this._plugin.Log.Info($"12S : l7dValues was empty or null: DisplayName: {this.l7dValues["displayName"]}, groupName: {this.l7dValues["groupName"]}.");
             }
-            this._plugin.Tick += (sender, e) => this.ActionImageChanged("");
+            this._plugin.Tick += (sender, e) => this.ActionImageChanged("week");
             return base.OnLoad();
         }
 

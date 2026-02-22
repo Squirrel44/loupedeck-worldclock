@@ -18,7 +18,7 @@ namespace Loupedeck.WorldClockPlugin
         private WorldClockPlugin _plugin;
         private L10n _l10n;
         private Dictionary<String, String> l7dValues;
-        private readonly System.Collections.Concurrent.ConcurrentBag<String> _knownParams = new();
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<String, byte> _knownParams = new();
         public WorldClock12DL()
             : base() => this.MakeProfileAction("tree");
         protected override PluginProfileActionData GetProfileActionData()
@@ -60,7 +60,7 @@ namespace Loupedeck.WorldClockPlugin
             }
             this._plugin.Tick += (sender, e) =>
             {
-                foreach (var p in _knownParams)
+                foreach (var p in _knownParams.Keys)
                     this.ActionImageChanged(p);
             };
             return base.OnLoad();
@@ -79,7 +79,7 @@ namespace Loupedeck.WorldClockPlugin
                     DateTimeZone zone = DateTimeZoneProviders.Tzdb[actionParameter];
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
-                    if (!_knownParams.Contains(actionParameter)) _knownParams.Add(actionParameter);
+                    _knownParams.TryAdd(actionParameter, 0);
                     DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
                     CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
                     Int32 idx = actionParameter.LastIndexOf("/");

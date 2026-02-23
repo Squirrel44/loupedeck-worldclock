@@ -80,7 +80,6 @@ namespace Loupedeck.WorldClockPlugin
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
                     _knownParams.TryAdd(actionParameter, 0);
-                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
                     CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
                     Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
@@ -91,8 +90,8 @@ namespace Loupedeck.WorldClockPlugin
                     var h = bitmapBuilder.Height * 0.3;
 
                     bitmapBuilder.DrawText(actionParameter.Substring(idx + 1).Replace("_", " "), (Int32)x1, (Int32)y3, (Int32)w, (Int32)h, new BitmapColor(255, 255, 255, 200), imageSize == PluginImageSize.Width90 ? 13 : 9, imageSize == PluginImageSize.Width90 ? 2 : 0, 10);
-                    bitmapBuilder.DrawText(todayDt.ToString("HH:mm", currentCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 33 : 9, imageSize == PluginImageSize.Width90 ? 12 : 5);
-                    bitmapBuilder.DrawText(todayDt.ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x1, (Int32)y2, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 13 : 9, imageSize == PluginImageSize.Width90 ? 16 : 8, 1);
+                    bitmapBuilder.DrawText($"{today.Hour:D2}:{today.Minute:D2}", (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 33 : 9, imageSize == PluginImageSize.Width90 ? 12 : 5);
+                    bitmapBuilder.DrawText(new DateTime(today.Year, today.Month, today.Day).ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x1, (Int32)y2, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 13 : 9, imageSize == PluginImageSize.Width90 ? 16 : 8, 1);
                 }
                 return bitmapBuilder.ToImage();
             }

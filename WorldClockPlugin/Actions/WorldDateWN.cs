@@ -79,9 +79,7 @@ namespace Loupedeck.WorldClockPlugin
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
                     _knownParams.TryAdd(actionParameter, 0);
-                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
                     CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
-                    Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
                     var w = bitmapBuilder.Width * 0.8;
                     var y1 = bitmapBuilder.Height * 0.25;
@@ -89,7 +87,7 @@ namespace Loupedeck.WorldClockPlugin
                     var h = bitmapBuilder.Height * 0.3;
 
                     bitmapBuilder.DrawText(currentCulture.DateTimeFormat.GetDayName(BclConversions.ToDayOfWeek(today.DayOfWeek)), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 18 : 9, imageSize == PluginImageSize.Width90 ? 7 : 5, 10);
-                    bitmapBuilder.DrawText(todayDt.ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x1, (Int32)y2, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 15 : 9, imageSize == PluginImageSize.Width90 ? 7 : 5, 10);
+                    bitmapBuilder.DrawText(new DateTime(today.Year, today.Month, today.Day).ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x1, (Int32)y2, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 15 : 9, imageSize == PluginImageSize.Width90 ? 7 : 5, 10);
                 }
                 return bitmapBuilder.ToImage();
             }

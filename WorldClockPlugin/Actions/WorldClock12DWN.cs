@@ -79,9 +79,8 @@ namespace Loupedeck.WorldClockPlugin
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
                     _knownParams.TryAdd(actionParameter, 0);
-                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
+                    Int32 h12 = today.Hour % 12 == 0 ? 12 : today.Hour % 12;
                     CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
-                    Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
                     var x2 = bitmapBuilder.Width * 0.39;
                     var x3 = bitmapBuilder.Width * 0.1;
@@ -92,10 +91,10 @@ namespace Loupedeck.WorldClockPlugin
                     var y4 = bitmapBuilder.Height * 0.6;
                     var h = bitmapBuilder.Height * 0.3;
 
-                    bitmapBuilder.DrawText(todayDt.ToString("hh:mm", CultureInfo.InvariantCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 33 : 9, imageSize == PluginImageSize.Width90 ? 11 : 8);
-                    bitmapBuilder.DrawText(todayDt.ToString("tt", CultureInfo.InvariantCulture), (Int32)x2, (Int32)y2, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 12 : 9, imageSize == PluginImageSize.Width90 ? 11 : 8);
+                    bitmapBuilder.DrawText($"{h12:D2}:{today.Minute:D2}", (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 33 : 9, imageSize == PluginImageSize.Width90 ? 11 : 8);
+                    bitmapBuilder.DrawText(today.Hour < 12 ? "AM" : "PM", (Int32)x2, (Int32)y2, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 12 : 9, imageSize == PluginImageSize.Width90 ? 11 : 8);
                     bitmapBuilder.DrawText(currentCulture.DateTimeFormat.GetDayName(BclConversions.ToDayOfWeek(today.DayOfWeek)), (Int32)x1, (Int32)y3, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 15 : 9, imageSize == PluginImageSize.Width90 ? 7 : 5, 10);
-                    bitmapBuilder.DrawText(todayDt.ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x3, (Int32)y4, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 13 : 9, imageSize == PluginImageSize.Width90 ? 16 : 8, 1);
+                    bitmapBuilder.DrawText(new DateTime(today.Year, today.Month, today.Day).ToString(currentCulture.DateTimeFormat.ShortDatePattern, currentCulture), (Int32)x3, (Int32)y4, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 13 : 9, imageSize == PluginImageSize.Width90 ? 16 : 8, 1);
                 }
                 return bitmapBuilder.ToImage();
             }

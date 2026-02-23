@@ -79,14 +79,12 @@ namespace Loupedeck.WorldClockPlugin
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
                     _knownParams.TryAdd(actionParameter, 0);
-                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
-                    Int32 idx = actionParameter.LastIndexOf("/");
                     var x1 = bitmapBuilder.Width * 0.1;
                     var w = bitmapBuilder.Width * 0.8;
                     var y1 = bitmapBuilder.Height * 0.3;
                     var h = bitmapBuilder.Height * 0.3;
 
-                    bitmapBuilder.DrawText(todayDt.ToString("HH:mm:ss", CultureInfo.InvariantCulture), (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 18 : 9, imageSize == PluginImageSize.Width90 ? 12 : 8, 1);
+                    bitmapBuilder.DrawText($"{today.Hour:D2}:{today.Minute:D2}:{today.Second:D2}", (Int32)x1, (Int32)y1, (Int32)w, (Int32)h, BitmapColor.White, imageSize == PluginImageSize.Width90 ? 18 : 9, imageSize == PluginImageSize.Width90 ? 12 : 8, 1);
                 }
                 return bitmapBuilder.ToImage();
             }

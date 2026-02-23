@@ -79,7 +79,6 @@ namespace Loupedeck.WorldClockPlugin
                     ZonedClock clock = SystemClock.Instance.InZone(zone);
                     ZonedDateTime today = clock.GetCurrentZonedDateTime();
                     _knownParams.TryAdd(actionParameter, 0);
-                    DateTime todayDt = today.LocalDateTime.ToDateTimeUnspecified();
                     Int32 idx = actionParameter.LastIndexOf("/");
                     var secHandLength = 35;
                     var minHandLength = 30;
@@ -88,11 +87,11 @@ namespace Loupedeck.WorldClockPlugin
                     var wx1 = bitmapBuilder.Width * 0.5;
                     var wy1 = bitmapBuilder.Width * 0.5;
                     bitmapBuilder.SetBackgroundImage(EmbeddedResources.ReadImage(EmbeddedResources.FindFile("watchface1.png")));
-                    handCoord = HelperFunctions.MSCoord(Int32.Parse(todayDt.ToString("ss", CultureInfo.InvariantCulture)), secHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
+                    handCoord = HelperFunctions.MSCoord(today.Second, secHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
                     bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)wx1, (Int32)wy1, new BitmapColor(255, 0, 0), 1);
-                    handCoord = HelperFunctions.MSCoord(Int32.Parse(todayDt.ToString("mm", CultureInfo.InvariantCulture)), minHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
+                    handCoord = HelperFunctions.MSCoord(today.Minute, minHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
                     bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)wx1, (Int32)wy1, new BitmapColor(120, 120, 120), 2);
-                    handCoord = HelperFunctions.HrCoord(Int32.Parse(todayDt.ToString("hh", CultureInfo.InvariantCulture)) % 12, Int32.Parse(todayDt.ToString("mm", CultureInfo.InvariantCulture)), hrHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
+                    handCoord = HelperFunctions.HrCoord(today.Hour % 12, today.Minute, hrHandLength, bitmapBuilder.Width, bitmapBuilder.Height);
                     bitmapBuilder.DrawLine(handCoord[0], handCoord[1], (Int32)wx1, (Int32)wy1, new BitmapColor(120, 120, 120), 3);
                     var lx1 = bitmapBuilder.Width * 0.1;
                     var lw = bitmapBuilder.Width * 0.8;
